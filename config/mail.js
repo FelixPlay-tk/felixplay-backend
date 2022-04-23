@@ -35,9 +35,34 @@ exports.sendVerificationLink = (to, token) => {
         from: "FelixPlay <noreply@felixplay.tk>",
         to: to,
         subject: "Verify Email",
-        text: `Click this link to verify your account http://localhost:8000/auth/verify?token=${token}&email=${to}`,
+        text: `Click this link to verify your account http://localhost:3000/auth/verify?token=${token}&email=${to}`,
     };
 
     const result = transport.sendMail(mailOptions);
     return result;
+};
+
+exports.sendResetPasswordMail = async (to, token) => {
+    const accessToken = oAuth2Client.getAccessToken();
+
+    const transport = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            type: "OAuth2",
+            user: "officialfelixplay@gmail.com",
+            clientId: CLIENT_ID,
+            clientSecret: CLIENT_SECRET,
+            refreshToken: REFRESH_TOKEN,
+            accessToken: accessToken,
+        },
+    });
+
+    const mailOptions = {
+        from: "FelixPlay <noreply@felixplay.tk>",
+        to: to,
+        subject: "Reset Password",
+        text: `Visit this link to reset your password http://localhost:3000/auth/resetpassword?token=${token}`,
+    };
+
+    return transport.sendMail(mailOptions);
 };

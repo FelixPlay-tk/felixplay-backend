@@ -7,7 +7,11 @@ const {
     resendVerificationLink,
     signInWithEmail,
     verifyJWT,
+    changePassword,
+    forgotPassword,
+    resetPassword,
 } = require("../controllers/authentication");
+const { authorize } = require("../middlewares/authorize");
 
 router.post("/register", register);
 router.post("/resendverificationlink", resendVerificationLink);
@@ -15,5 +19,9 @@ router.get("/verify", verifyEmail);
 
 router.post("/login", signInWithEmail);
 router.post("/verifyjwt", verifyJWT);
+
+router.post("./changepassword", changePassword);
+router.post("/forgetpassword", forgotPassword);
+router.post("/resetpassword", authorize, resetPassword);
 
 module.exports = router;

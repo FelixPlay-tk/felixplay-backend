@@ -1,6 +1,9 @@
 const jwt = require("jsonwebtoken");
 const userModel = require("../model/userModel");
-const { sendVerificationLink } = require("../config/mail");
+const {
+    sendVerificationLink,
+    sendResetPasswordMail,
+} = require("../config/mail");
 const { equals, isEmail } = require("validator");
 
 exports.register = async (req, res) => {
@@ -68,7 +71,7 @@ exports.resendVerificationLink = async (req, res) => {
         if (user.verified)
             return res.status(400).json({ message: "User already verified" });
 
-        csendVerificationLink(user.email, user.verificationToken);
+        sendVerificationLink(user.email, user.verificationToken);
 
         res.json({
             message: "Please check your email inbox to verify your account",
@@ -183,5 +186,97 @@ exports.verifyJWT = async (req, res) => {
         });
     } catch (error) {
         return res.status(403).json({ message: "Unauthorized Token" });
+    }
+};
+
+exports.changePassword = async (req, res) => {
+    const { id } = req.userData;
+    const { oldPassword, newPassword, confirmPassword } = req.body;
+
+    if (!oldPassword || newPassword || confirmPassword)
+        return res.status(400).json({ message: "Password can't be empty!" });
+
+    if (newPassword !== confirmPassword)
+        return res.status(400).json({ message: "Passwords do not match!" });
+
+    try {
+        const user = await userModel.findById(id);
+
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        if (!user.verifyPassword(oldPassword))
+            return res.status(400).json({ message: "Incorrect Password!" });
+
+        user.hashPassword(newPassword);
+
+        const updatePassword = await user.save();
+
+        if (!updatePassword)
+            return res
+                .status(500)
+                .json({ message: "Failed to update password!" });
+
+        return res
+            .status(200)
+            .json({ message: "Sucessfully Updated password!" });
+    } catch (error) {
+        return res.status(403).json({ message: "Unauthorized user" });
+    }
+};
+
+exports.forgotPassword = async (req, res) => {
+    const { email } = req.body;
+
+    if (!email || !isEmail(email))
+        return res.status(400).json({ message: "Please enter a valid Email" });
+
+    try {
+        const user = await userModel.findOne({ email });
+
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+            expiresIn: "1h",
+        });
+
+        sendResetPasswordMail(email, token);
+
+        return res.json({
+            message: "Please check your email inbox to reset your password!",
+        });
+    } catch (error) {
+        return res.status(500).json({ message: "Oops! Something went wrong" });
+    }
+};
+
+exports.resetPassword = async (req, res) => {
+    const { email } = req.userData;
+    const { password, confirmPassword } = req.body;
+
+    if (!password || password.length < 6)
+        return res
+            .status(400)
+            .json({ message: "Please enter a valid password" });
+
+    if (password !== confirmPassword)
+        return res.status(400).json({ message: "Passwords do not match!" });
+
+    try {
+        const user = await userModel.findOne({ email: email });
+
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        user.hashPassword(req.body.password);
+
+        const updatePassword = await user.save();
+
+        if (!updatePassword)
+            return res
+                .status(500)
+                .json({ message: "Failed to update password!" });
+
+        return res.json({ message: "Sucessfully Updated password!" });
+    } catch (error) {
+        return res.status(403).json({ message: "Unauthorized user" });
     }
 };
