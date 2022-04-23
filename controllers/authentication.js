@@ -1,3 +1,4 @@
+const jwt = require("jsonwebtoken");
 const userModel = require("../model/userModel");
 const { sendVerificationLink } = require("../config/mail");
 const { equals, isEmail } = require("validator");
@@ -9,7 +10,7 @@ exports.register = async (req, res) => {
         return res.status(400).json({ message: "All fields are required" });
     }
 
-    if (!isEmail(email))
+    if (!email || !isEmail(email))
         return res.json({ message: "Please provide valid email address" });
 
     if (!equals(password, confirmPassword)) {
@@ -56,7 +57,7 @@ exports.register = async (req, res) => {
 exports.resendVerificationLink = async (req, res) => {
     const { email } = req.body;
 
-    if (!isEmail(email))
+    if (!email || !isEmail(email))
         return res.json({ message: "Please provide valid email address" });
 
     try {
@@ -86,7 +87,7 @@ exports.verifyEmail = async (req, res) => {
     if (!token || !email)
         return res.status(400).json({ message: "all fields are required" });
 
-    if (!isEmail(email))
+    if (!email || !isEmail(email))
         return res.json({ message: "Please provide valid email address" });
 
     try {
@@ -124,5 +125,63 @@ exports.verifyEmail = async (req, res) => {
         });
     } catch (error) {
         return res.status(500).json({ message: "Oops! Something went wrong" });
+    }
+};
+
+exports.signInWithEmail = async (req, res) => {
+    const { email, password } = req.body;
+
+    if (!email || !isEmail(email))
+        return res.json({ message: "Please provide valid email address" });
+
+    if (!password || password.length < 6)
+        return res.json({ message: "Password must be 6 characters long" });
+
+    try {
+        const user = await userModel.findOne({ email });
+
+        if (!user)
+            return res.status(404).json({ message: "Invalid email address!" });
+
+        if (!user.verified)
+            return res.status(400).json({
+                message: "Please verify your email before logging in!",
+            });
+
+        const checkPassword = await user.verifyPassword(password);
+
+        if (!checkPassword)
+            return res.status(403).json({ message: "Incorrect Password!" });
+
+        const JWT_TOKEN = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
+            expiresIn: "7d",
+        });
+
+        return res
+            .status(200)
+            .json({ JWT_TOKEN, message: "Login Successfull" });
+    } catch (error) {
+        return res.status(500).json({ message: "Oops! Something went wrong" });
+    }
+};
+
+exports.verifyJWT = async (req, res) => {
+    const { JWT_TOKEN } = req.body;
+
+    if (!JWT_TOKEN) return res.status(400).json({ message: "Invalid Token" });
+
+    try {
+        const isValid = jwt.verify(JWT_TOKEN, process.env.JWT_SECRET);
+
+        const user = await userModel.findById(isValid.id);
+
+        if (!user) return res.status(404).json({ message: "User not found" });
+
+        return res.status(200).json({
+            fullName: `${user.firstname} ${user.lastname}`,
+            email: user.email,
+        });
+    } catch (error) {
+        return res.status(403).json({ message: "Unauthorized Token" });
     }
 };
