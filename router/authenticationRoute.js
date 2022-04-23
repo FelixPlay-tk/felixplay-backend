@@ -1,8 +1,14 @@
 const express = require("express");
-const { register } = require("../controllers/authentication");
 const router = express.Router();
 
+const {
+    register,
+    verifyEmail,
+    resendVerificationLink,
+} = require("../controllers/authentication");
+
 router.post("/register", register);
-// router.get("/verify", verifyAccount)
+router.post("/resendverificationlink", resendVerificationLink);
+router.get("/verify", verifyEmail);
 
 module.exports = router;

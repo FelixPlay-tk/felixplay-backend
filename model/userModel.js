@@ -74,7 +74,7 @@ userSchema.methods.verifyPassword = function (password) {
 
 // generate verification token
 userSchema.methods.generateToken = function () {
-    this.verificationToken = crypto.randomBytes(256).toString("hex");
+    this.verificationToken = crypto.randomBytes(32).toString("hex");
 };
 
 module.exports = mongoose.model("user", userSchema);
