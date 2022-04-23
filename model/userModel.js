@@ -36,18 +36,18 @@ const userSchema = mongoose.Schema(
         email: {
             type: String,
             required: "{PATH} is required!",
-
+            index: true,
+            trim: true,
             validate(value) {
                 if (!validator.isEmail(value)) {
                     throw new Error("Invalid email address");
                 }
             },
-            index: true,
         },
 
         hashed_password: String,
 
-        // verificationToken: String,
+        verificationToken: String,
 
         verified: {
             type: Boolean,

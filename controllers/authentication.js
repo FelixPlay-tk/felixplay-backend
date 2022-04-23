@@ -21,13 +21,10 @@ exports.register = async (req, res) => {
     try {
         const checkExist = await userModel.findOne({ email: req.body.email });
 
-        if (checkExist && !checkExist.verified)
+        if (checkExist)
             return res
                 .status(400)
-                .json({ message: "Email not verified", user: checkExist });
-
-        if (checkExist && checkExist.verified)
-            return res.status(400).json({ message: "Email already exists" });
+                .json({ message: "Email already registered!" });
 
         // initialize user model
         const newUser = new userModel({
@@ -37,10 +34,10 @@ exports.register = async (req, res) => {
         });
 
         // generating password hash
-        newUser.hashPassword(req.body.password);
+        await newUser.hashPassword(req.body.password);
 
         // generating verification Token
-        newUser.generateToken();
+        await newUser.generateToken();
 
         // attempting to save on db
         const saveUser = await newUser.save();
