@@ -18,7 +18,7 @@ router.post("/resendverificationlink", resendVerificationLink);
 router.get("/verify", verifyEmail);
 
 router.post("/login", signInWithEmail);
-router.post("/verifyjwt", verifyJWT);
+router.post("/authorize", verifyJWT);
 
 router.post("./changepassword", changePassword);
 router.post("/forgetpassword", forgotPassword);

@@ -35,7 +35,7 @@ exports.sendVerificationLink = (to, token) => {
         from: "FelixPlay <noreply@felixplay.tk>",
         to: to,
         subject: "Verify Email",
-        text: `Click this link to verify your account http://localhost:3000/auth/verify?token=${token}&email=${to}`,
+        text: `Use this OTP to Verify your Account - ${token}`,
     };
 
     const result = transport.sendMail(mailOptions);

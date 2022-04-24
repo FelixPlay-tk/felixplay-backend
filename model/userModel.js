@@ -47,7 +47,7 @@ const userSchema = mongoose.Schema(
 
         hashed_password: String,
 
-        verificationToken: String,
+        OTP: String,
 
         verified: {
             type: Boolean,
@@ -73,8 +73,13 @@ userSchema.methods.verifyPassword = function (password) {
 };
 
 // generate verification token
-userSchema.methods.generateToken = function () {
-    this.verificationToken = crypto.randomBytes(32).toString("hex");
+userSchema.methods.generateOTP = function () {
+    const digits = "0123456789";
+    let OTP = "";
+    for (let i = 0; i < 4; i++) {
+        OTP += digits[Math.floor(Math.random() * 10)];
+    }
+    this.OTP = OTP;
 };
 
 module.exports = mongoose.model("user", userSchema);

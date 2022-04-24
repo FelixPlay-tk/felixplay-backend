@@ -35,7 +35,7 @@ exports.register = async (req, res) => {
         newUser.hashPassword(password);
 
         // generating verification Token
-        await newUser.generateToken();
+        await newUser.generateOTP();
 
         // attempting to save on db
         const saveUser = await newUser.save();
@@ -45,12 +45,12 @@ exports.register = async (req, res) => {
                 .status(400)
                 .json({ message: "Oops! Something went wrong" });
 
-        sendVerificationLink(saveUser.email, saveUser.verificationToken)
+        sendVerificationLink(saveUser.email, saveUser.OTP)
             .then((result) => console.log(result))
             .catch((err) => console.log(err.message));
 
         return res.status(201).json({
-            message: "Please check your email inbox to verify your account",
+            message: "We have sent an One Time Passcode to verify your account",
         });
     } catch (error) {
         return res.status(500).json({ message: "Oops! Something went wrong" });
@@ -71,10 +71,10 @@ exports.resendVerificationLink = async (req, res) => {
         if (user.verified)
             return res.status(400).json({ message: "User already verified" });
 
-        sendVerificationLink(user.email, user.verificationToken);
+        sendVerificationLink(user.email, user.OTP);
 
         res.json({
-            message: "Please check your email inbox to verify your account",
+            message: "We have sent an One Time Passcode to verify your account",
         });
     } catch (error) {
         return res.status(500).json({
@@ -85,9 +85,9 @@ exports.resendVerificationLink = async (req, res) => {
 };
 
 exports.verifyEmail = async (req, res) => {
-    const { token, email } = req.query;
+    const { otp, email } = req.query;
 
-    if (!token || !email)
+    if (!otp || !email)
         return res.status(400).json({ message: "all fields are required" });
 
     if (!email || !isEmail(email))
@@ -101,8 +101,8 @@ exports.verifyEmail = async (req, res) => {
         if (user.verified)
             return res.status(400).json({ message: "User already verified!" });
 
-        if (user.verificationToken !== token)
-            return res.status(400).jsob({ message: "Invalid token" });
+        if (user.OTP !== otp)
+            return res.status(400).json({ message: "Invalid OTP" });
 
         const updateUser = await userModel.updateOne(
             { email: user.email },
@@ -111,7 +111,7 @@ exports.verifyEmail = async (req, res) => {
                     verified: true,
                 },
                 $unset: {
-                    verificationToken: null,
+                    OTP: null,
                 },
             }
         );
