@@ -61,7 +61,7 @@ exports.sendResetPasswordMail = async (to, token) => {
         from: "FelixPlay <noreply@felixplay.tk>",
         to: to,
         subject: "Reset Password",
-        text: `Visit this link to reset your password http://localhost:3000/auth/resetpassword?token=${token}`,
+        text: `Visit this link to reset your password http://localhost:3000/resetpassword?token=${token}`,
     };
 
     return transport.sendMail(mailOptions);
