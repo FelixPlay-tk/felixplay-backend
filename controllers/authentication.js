@@ -23,7 +23,15 @@ exports.register = async (req, res) => {
     try {
         const checkExist = await userModel.findOne({ email: email });
 
-        if (checkExist)
+        if (checkExist && !checkExist.verified) {
+            sendVerificationLink(checkExist.email, checkExist.OTP);
+            return res.json({
+                message:
+                    "We have sent an One Time Passcode to verify your account",
+            });
+        }
+
+        if (checkExist && checkExist.verified)
             return res
                 .status(400)
                 .json({ message: "Email already registered!" });
@@ -57,11 +65,13 @@ exports.register = async (req, res) => {
     }
 };
 
-exports.resendVerificationLink = async (req, res) => {
+exports.resendOTP = async (req, res) => {
     const { email } = req.body;
 
     if (!email || !isEmail(email))
-        return res.json({ message: "Please provide valid email address" });
+        return res
+            .status(400)
+            .json({ message: "Please provide valid email address" });
 
     try {
         const user = await userModel.findOne({ email });
@@ -74,7 +84,7 @@ exports.resendVerificationLink = async (req, res) => {
         sendVerificationLink(user.email, user.OTP);
 
         res.json({
-            message: "We have sent an One Time Passcode to verify your account",
+            message: "OTP Resent",
         });
     } catch (error) {
         return res.status(500).json({
@@ -85,13 +95,15 @@ exports.resendVerificationLink = async (req, res) => {
 };
 
 exports.verifyEmail = async (req, res) => {
-    const { otp, email } = req.query;
+    const { otp, email } = req.body;
 
     if (!otp || !email)
         return res.status(400).json({ message: "all fields are required" });
 
     if (!email || !isEmail(email))
-        return res.json({ message: "Please provide valid email address" });
+        return res
+            .status(400)
+            .json({ message: "Please provide valid email address" });
 
     try {
         const user = await userModel.findOne({ email: email });
