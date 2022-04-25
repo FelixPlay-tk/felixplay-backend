@@ -42,7 +42,26 @@ exports.addNewMovie = async (req, res) => {
 
         if (checkExist)
             return res.status(409).json({ message: "Movie already exists!" });
+
+        const newMovie = new movieModel({
+            contentType,
+            title,
+            details,
+            language,
+            poster,
+            banner,
+            categories,
+            cast,
+            runtime,
+            releaseDate,
+            region,
+            downloadLinks,
+            streamLink,
+        });
+
+        const saveMovie = await newMovie.save();
+        res.status(201).json(newMovie);
     } catch (error) {
-        res.status(500).json({ message: "Something Went Wrong!" });
+        res.status(500).json({ message: error.message });
     }
 };
