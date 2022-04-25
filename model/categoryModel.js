@@ -5,6 +5,7 @@ const movieCategorySchema = Schema({
         type: String,
         index: true,
         required: true,
+        unique: true,
     },
 });
 
@@ -13,6 +14,7 @@ const showsCategorySchema = Schema({
         type: String,
         index: true,
         required: true,
+        unique: true,
     },
 });
 
@@ -21,6 +23,7 @@ const animesCategorySchema = Schema({
         type: String,
         index: true,
         required: true,
+        unique: true,
     },
 });
 
