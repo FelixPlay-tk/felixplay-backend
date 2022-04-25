@@ -20,8 +20,8 @@ router.post("/verify", verifyEmail);
 router.post("/login", signInWithEmail);
 router.post("/authorize", verifyJWT);
 
-router.post("./changepassword", changePassword);
 router.post("/forgetpassword", forgotPassword);
 router.post("/resetpassword", authorize, resetPassword);
+router.post("/changepassword", authorize, changePassword);
 
 module.exports = router;

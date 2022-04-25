@@ -205,7 +205,7 @@ exports.changePassword = async (req, res) => {
     const { id } = req.userData;
     const { oldPassword, newPassword, confirmPassword } = req.body;
 
-    if (!oldPassword || newPassword || confirmPassword)
+    if (!oldPassword || !newPassword || !confirmPassword)
         return res.status(400).json({ message: "Password can't be empty!" });
 
     if (newPassword !== confirmPassword)
