@@ -27,7 +27,7 @@ const animesCategorySchema = Schema({
     },
 });
 
-const moviesCategoryModel = model("movieCategory", movieCategorySchema);
+const moviesCategoryModel = model("moviesCategory", movieCategorySchema);
 const showsCategoryModel = model("showsCategory", showsCategorySchema);
 const animesCategoryModel = model("animesCategory", animesCategorySchema);
 
