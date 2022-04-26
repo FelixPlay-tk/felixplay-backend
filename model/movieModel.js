@@ -33,8 +33,7 @@ const movieSchema = mongoose.Schema({
     },
     categories: [
         {
-            type: mongoose.Types.ObjectId,
-            ref: "moviesCategory",
+            type: String,
             index: true,
             lowercase: true,
         },

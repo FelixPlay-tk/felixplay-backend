@@ -27,11 +27,9 @@ exports.addNewMovie = async (req, res) => {
         cast,
         runtime,
         releaseDate,
-        region,
-        downloadLinks,
-        streamLink)
+        region)
     )
-        return res.status(400).json("All fields are required!");
+        return res.status(400).json({ message: "All fields are required!" });
 
     try {
         const checkExist = await movieModel.findOne({
@@ -65,3 +63,5 @@ exports.addNewMovie = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+exports.getMovies = async (req, res) => {};
