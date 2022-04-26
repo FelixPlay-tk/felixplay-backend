@@ -1,5 +1,6 @@
 const movieModel = require("../model/movieModel");
 
+// add Movies
 exports.addNewMovie = async (req, res) => {
     const {
         contentType,
@@ -16,6 +17,7 @@ exports.addNewMovie = async (req, res) => {
         downloadLinks,
         streamLink,
     } = req.body;
+
     if (
         !(contentType,
         title,
@@ -64,4 +66,72 @@ exports.addNewMovie = async (req, res) => {
     }
 };
 
-exports.getMovies = async (req, res) => {};
+// Get Featured Movies
+exports.getFeaturedMovies = async (req, res) => {
+    try {
+        const response = await movieModel
+            .find(null, [
+                "contentType",
+                "title",
+                "detail",
+                "banner",
+                "releaseDate",
+                "categories",
+                "languages",
+            ])
+            .sort({ releaseDate: -1 })
+            .limit(5);
+        res.json(response);
+    } catch (error) {
+        res.status(500).json({ message: "Something Went Wrong!" });
+    }
+};
+
+// Get Movies By Language
+exports.getMoviesByLanguage = async (req, res) => {
+    const { language } = req.params;
+
+    try {
+        const results = await movieModel
+            .find({ language: language }, ["contentType", "banner", "title"])
+            .sort({ releaseDate: -1 });
+
+        res.json(results);
+    } catch (error) {
+        res.status(500).json({ message: "Something Went Wrong!" });
+    }
+};
+
+// Get Movies by Category
+exports.getMoviesByCategory = async (req, res) => {
+    const { category } = req.params;
+    const { limit } = req.query;
+
+    try {
+        const results = await movieModel
+            .find({ categories: category }, ["contentType", "banner", "title"])
+            .sort({ releaseDate: -1 })
+            .limit(limit);
+
+        res.json(results);
+    } catch (error) {
+        res.status(500).json({ message: "Something Went Wrong!" });
+    }
+};
+
+// Get Single Movie
+exports.getSingleMovie = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const movie = await movieModel
+            .findById(id)
+            .select("-downloadLinks")
+            .select("-streamLink")
+            .select("-__v");
+
+        res.json(movie);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
