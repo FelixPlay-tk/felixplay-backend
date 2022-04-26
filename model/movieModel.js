@@ -75,6 +75,7 @@ const movieSchema = mongoose.Schema({
 
     streamLink: {
         type: String,
+        default: "",
     },
 });
 

@@ -135,3 +135,208 @@ exports.getSingleMovie = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+exports.getMovieLinks = async (req, res) => {
+    const { id } = req.params;
+
+    try {
+        const movie = await movieModel.findById(id).select("-__v");
+        res.json(movie);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
+exports.getMovieRows = async (req, res) => {
+    try {
+        const [
+            latest,
+            comedy,
+            drama,
+            family,
+            crime,
+            thriller,
+            action,
+            romance,
+            horror,
+            bengali,
+            hindi,
+            english,
+        ] = await Promise.all([
+            // latest
+            movieModel
+                .find(null, [
+                    "contentType",
+                    "title",
+                    "detail",
+                    "poster",
+                    "releaseDate",
+                    "banner",
+                ])
+                .sort({ releaseDate: -1 })
+                .limit(20),
+
+            //comedy movies
+            movieModel
+                .find({ categories: "comedy" }, [
+                    "contentType",
+                    "title",
+                    "detail",
+                    "poster",
+                    "releaseDate",
+                    "banner",
+                ])
+                .limit(20)
+                .sort({ releaseDate: -1 }),
+
+            //drama movies
+            movieModel
+                .find({ categories: "drama" }, [
+                    "contentType",
+                    "title",
+                    "detail",
+                    "poster",
+                    "releaseDate",
+                    "banner",
+                ])
+                .limit(20)
+                .sort({ releaseDate: -1 }),
+
+            //family movies
+            movieModel
+                .find({ categories: "family" }, [
+                    "contentType",
+                    "title",
+                    "detail",
+                    "poster",
+                    "releaseDate",
+                    "banner",
+                ])
+                .limit(20)
+                .sort({ releaseDate: -1 }),
+
+            //crime movies
+            movieModel
+                .find({ categories: "crime" }, [
+                    "contentType",
+                    "title",
+                    "detail",
+                    "poster",
+                    "releaseDate",
+                    "banner",
+                ])
+                .limit(20)
+                .sort({ releaseDate: -1 }),
+
+            //thriller movies
+            movieModel
+                .find({ categories: "thriller" }, [
+                    "contentType",
+                    "title",
+                    "detail",
+                    "poster",
+                    "releaseDate",
+                    "banner",
+                ])
+                .limit(20)
+                .sort({ releaseDate: -1 }),
+
+            //action movies
+            movieModel
+                .find({ categories: "action" }, [
+                    "contentType",
+                    "title",
+                    "detail",
+                    "poster",
+                    "releaseDate",
+                    "banner",
+                ])
+                .limit(20)
+                .sort({ releaseDate: -1 }),
+
+            //romance movies
+            movieModel
+                .find({ categories: "romance" }, [
+                    "contentType",
+                    "title",
+                    "detail",
+                    "poster",
+                    "releaseDate",
+                    "banner",
+                ])
+                .limit(20)
+                .sort({ releaseDate: -1 }),
+
+            //horror movies
+            movieModel
+                .find({ categories: "horror" }, [
+                    "contentType",
+                    "title",
+                    "detail",
+                    "poster",
+                    "releaseDate",
+                    "banner",
+                ])
+                .limit(20)
+                .sort({ releaseDate: -1 }),
+
+            //Bengali movies
+            movieModel
+                .find({ language: "bengali" }, [
+                    "contentType",
+                    "title",
+                    "detail",
+                    "poster",
+                    "releaseDate",
+                    "banner",
+                ])
+                .limit(20)
+                .sort({ releaseDate: -1 }),
+
+            //hindi movies
+            movieModel
+                .find({ language: "hindi" }, [
+                    "contentType",
+                    "title",
+                    "detail",
+                    "poster",
+                    "releaseDate",
+                    "banner",
+                ])
+                .limit(20)
+                .sort({ releaseDate: -1 }),
+
+            //english movies
+            movieModel
+                .find({ language: "english" }, [
+                    "contentType",
+                    "title",
+                    "detail",
+                    "poster",
+                    "releaseDate",
+                    "banner",
+                ])
+                .limit(20)
+                .sort({ releaseDate: -1 }),
+        ]);
+
+        const movies = [
+            { title: "latest", hasMore: false, movies: latest, id: "row1" },
+            { title: "comedy", hasMore: true, movies: comedy, id: "row2" },
+            { title: "drama", hasMore: true, movies: drama, id: "row3" },
+            { title: "family", hasMore: true, movies: family, id: "row4" },
+            { title: "crime", hasMore: true, movies: crime, id: "row5" },
+            { title: "thriller", hasMore: true, movies: thriller, id: "row6" },
+            { title: "action", hasMore: true, movies: action, id: "row7" },
+            { title: "romance", hasMore: true, movies: romance, id: "row8" },
+            { title: "horror", hasMore: true, movies: horror, id: "row9" },
+            { title: "bengali", hasMore: true, movies: bengali, id: "row10" },
+            { title: "hindi", hasMore: true, movies: hindi, id: "row11" },
+            { title: "english", hasMore: true, movies: english, id: "row12" },
+        ];
+
+        res.json(movies);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
