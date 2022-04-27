@@ -172,6 +172,11 @@ exports.signInWithEmail = async (req, res) => {
             expiresIn: "7d",
         });
 
+        res.cookie("JWT_TOKEN", JWT_TOKEN, {
+            maxAge: 7 * 24 * 60 * 60 * 1000,
+            httpOnly: true,
+        });
+
         return res
             .status(200)
             .json({ JWT_TOKEN, message: "Login Successfull" });
@@ -247,7 +252,7 @@ exports.forgotPassword = async (req, res) => {
 
         if (!user) return res.status(404).json({ message: "User not found" });
 
-        const token = jwt.sign({ email }, process.env.JWT_SECRET, {
+        const token = jwt.sign({ email }, process.env.FORGET_PASSWORD_SECRET, {
             expiresIn: "1h",
         });
 
@@ -262,7 +267,7 @@ exports.forgotPassword = async (req, res) => {
 };
 
 exports.resetPassword = async (req, res) => {
-    const { email } = req.userData;
+    const token = req.headers.authorization.split(" ")[1];
     const { password, confirmPassword } = req.body;
 
     if (!password || password.length < 6)
@@ -274,6 +279,8 @@ exports.resetPassword = async (req, res) => {
         return res.status(400).json({ message: "Passwords do not match!" });
 
     try {
+        const { email } = jwt.verify(token, process.env.FORGET_PASSWORD_SECRET);
+
         const user = await userModel.findOne({ email: email });
 
         if (!user) return res.status(404).json({ message: "User not found" });

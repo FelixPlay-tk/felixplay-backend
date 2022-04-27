@@ -5,7 +5,7 @@ exports.addNewMovie = async (req, res) => {
     const {
         contentType,
         title,
-        details,
+        detailss,
         poster,
         banner,
         language,
@@ -21,7 +21,7 @@ exports.addNewMovie = async (req, res) => {
     if (
         !(contentType,
         title,
-        details,
+        detailss,
         language,
         poster,
         banner,
@@ -46,7 +46,7 @@ exports.addNewMovie = async (req, res) => {
         const newMovie = new movieModel({
             contentType,
             title,
-            details,
+            detailss,
             language,
             poster,
             banner,
@@ -74,7 +74,7 @@ exports.getFeaturedMovies = async (req, res) => {
                 "contentType",
                 "title",
                 "language",
-                "details",
+                "detailss",
                 "banner",
                 "releaseDate",
                 "categories",
@@ -193,7 +193,7 @@ exports.getMovieRows = async (req, res) => {
                 .find(null, [
                     "contentType",
                     "title",
-                    "detail",
+                    "details",
                     "poster",
                     "releaseDate",
                     "banner",
@@ -206,7 +206,7 @@ exports.getMovieRows = async (req, res) => {
                 .find({ categories: "comedy" }, [
                     "contentType",
                     "title",
-                    "detail",
+                    "details",
                     "poster",
                     "releaseDate",
                     "banner",
@@ -219,7 +219,7 @@ exports.getMovieRows = async (req, res) => {
                 .find({ categories: "drama" }, [
                     "contentType",
                     "title",
-                    "detail",
+                    "details",
                     "poster",
                     "releaseDate",
                     "banner",
@@ -232,7 +232,7 @@ exports.getMovieRows = async (req, res) => {
                 .find({ categories: "family" }, [
                     "contentType",
                     "title",
-                    "detail",
+                    "details",
                     "poster",
                     "releaseDate",
                     "banner",
@@ -245,7 +245,7 @@ exports.getMovieRows = async (req, res) => {
                 .find({ categories: "crime" }, [
                     "contentType",
                     "title",
-                    "detail",
+                    "details",
                     "poster",
                     "releaseDate",
                     "banner",
@@ -258,7 +258,7 @@ exports.getMovieRows = async (req, res) => {
                 .find({ categories: "thriller" }, [
                     "contentType",
                     "title",
-                    "detail",
+                    "details",
                     "poster",
                     "releaseDate",
                     "banner",
@@ -271,7 +271,7 @@ exports.getMovieRows = async (req, res) => {
                 .find({ categories: "action" }, [
                     "contentType",
                     "title",
-                    "detail",
+                    "details",
                     "poster",
                     "releaseDate",
                     "banner",
@@ -284,7 +284,7 @@ exports.getMovieRows = async (req, res) => {
                 .find({ categories: "romance" }, [
                     "contentType",
                     "title",
-                    "detail",
+                    "details",
                     "poster",
                     "releaseDate",
                     "banner",
@@ -297,7 +297,7 @@ exports.getMovieRows = async (req, res) => {
                 .find({ categories: "horror" }, [
                     "contentType",
                     "title",
-                    "detail",
+                    "details",
                     "poster",
                     "releaseDate",
                     "banner",
@@ -310,7 +310,7 @@ exports.getMovieRows = async (req, res) => {
                 .find({ language: "bengali" }, [
                     "contentType",
                     "title",
-                    "detail",
+                    "details",
                     "poster",
                     "releaseDate",
                     "banner",
@@ -323,7 +323,7 @@ exports.getMovieRows = async (req, res) => {
                 .find({ language: "hindi" }, [
                     "contentType",
                     "title",
-                    "detail",
+                    "details",
                     "poster",
                     "releaseDate",
                     "banner",
@@ -336,7 +336,7 @@ exports.getMovieRows = async (req, res) => {
                 .find({ language: "english" }, [
                     "contentType",
                     "title",
-                    "detail",
+                    "details",
                     "poster",
                     "releaseDate",
                     "banner",
@@ -345,20 +345,100 @@ exports.getMovieRows = async (req, res) => {
                 .sort({ releaseDate: -1 }),
         ]);
 
-        const movies = [
-            { title: "latest", hasMore: false, movies: latest, id: "row1" },
-            { title: "comedy", hasMore: true, movies: comedy, id: "row2" },
-            { title: "drama", hasMore: true, movies: drama, id: "row3" },
-            { title: "family", hasMore: true, movies: family, id: "row4" },
-            { title: "crime", hasMore: true, movies: crime, id: "row5" },
-            { title: "thriller", hasMore: true, movies: thriller, id: "row6" },
-            { title: "action", hasMore: true, movies: action, id: "row7" },
-            { title: "romance", hasMore: true, movies: romance, id: "row8" },
-            { title: "horror", hasMore: true, movies: horror, id: "row9" },
-            { title: "bengali", hasMore: true, movies: bengali, id: "row10" },
-            { title: "hindi", hasMore: true, movies: hindi, id: "row11" },
-            { title: "english", hasMore: true, movies: english, id: "row12" },
-        ];
+        const movies = {
+            movieBanner: {
+                title: "featured",
+                hasMore: false,
+                items: featured,
+                id: "banner1",
+            },
+            movieRows: [
+                {
+                    title: "latest movies",
+                    hasMore: false,
+                    items: latest,
+                    id: "row1",
+                    link: "/movies/category/latest",
+                },
+                {
+                    title: "comedy movies",
+                    hasMore: true,
+                    items: comedy,
+                    id: "row2",
+                    link: "/movies/category/comedy",
+                },
+                {
+                    title: "drama movies",
+                    hasMore: true,
+                    items: drama,
+                    id: "row3",
+                    link: "/movies/category/drama",
+                },
+                {
+                    title: "family movies",
+                    hasMore: true,
+                    items: family,
+                    id: "row4",
+                    link: "/movies/category/family",
+                },
+                {
+                    title: "crime movies",
+                    hasMore: true,
+                    items: crime,
+                    id: "row5",
+                    link: "/movies/category/crime",
+                },
+                {
+                    title: "thriller movies",
+                    hasMore: true,
+                    items: thriller,
+                    id: "row6",
+                    link: "/movies/category/thriller",
+                },
+                {
+                    title: "action movies",
+                    hasMore: true,
+                    items: action,
+                    id: "row7",
+                    link: "/movies/category/action",
+                },
+                {
+                    title: "romance movies",
+                    hasMore: true,
+                    items: romance,
+                    id: "row8",
+                    link: "/movies/category/romance",
+                },
+                {
+                    title: "horror movies",
+                    hasMore: true,
+                    items: horror,
+                    id: "row9",
+                    link: "/movies/category/horror",
+                },
+                {
+                    title: "bengali movies",
+                    hasMore: true,
+                    items: bengali,
+                    id: "row10",
+                    link: "/movies/language/bengali",
+                },
+                {
+                    title: "hindi movies",
+                    hasMore: true,
+                    items: hindi,
+                    id: "row11",
+                    link: "/movies/language/hindi",
+                },
+                {
+                    title: "english movies",
+                    hasMore: true,
+                    items: english,
+                    id: "row12",
+                    link: "/movies/language/english",
+                },
+            ],
+        };
 
         res.json(movies);
     } catch (error) {
