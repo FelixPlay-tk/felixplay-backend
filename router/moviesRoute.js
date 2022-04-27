@@ -10,11 +10,13 @@ const {
     getSingleMovie,
     getMovieLinks,
     getMovieRows,
+    getAllMovies,
 } = require("../controllers/movies");
 
 router.put("/add", addNewMovie);
 
 router.get("/", getMovieRows);
+router.get("/all", getAllMovies);
 router.get("/featured", getFeaturedMovies);
 router.get("/language/:language", getMoviesByLanguage);
 router.get("/category/:category", getMoviesByCategory);

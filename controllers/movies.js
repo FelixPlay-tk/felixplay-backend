@@ -73,11 +73,13 @@ exports.getFeaturedMovies = async (req, res) => {
             .find(null, [
                 "contentType",
                 "title",
-                "detail",
+                "language",
+                "details",
                 "banner",
                 "releaseDate",
                 "categories",
                 "languages",
+                "runtime",
             ])
             .sort({ releaseDate: -1 })
             .limit(5);
@@ -136,20 +138,27 @@ exports.getSingleMovie = async (req, res) => {
     }
 };
 
+// Get Download and stream links of a movie
 exports.getMovieLinks = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const movie = await movieModel.findById(id).select("-__v");
+        const movie = await movieModel.findById(id, [
+            "streamLink",
+            "downloadLinks",
+        ]);
+        // .select("-__v");
         res.json(movie);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
+// Get all movie rows
 exports.getMovieRows = async (req, res) => {
     try {
         const [
+            featured,
             latest,
             comedy,
             drama,
@@ -163,6 +172,22 @@ exports.getMovieRows = async (req, res) => {
             hindi,
             english,
         ] = await Promise.all([
+            // featured
+            await movieModel
+                .find(null, [
+                    "contentType",
+                    "title",
+                    "language",
+                    "details",
+                    "banner",
+                    "releaseDate",
+                    "categories",
+                    "languages",
+                    "runtime",
+                ])
+                .sort({ releaseDate: -1 })
+                .limit(5),
+
             // latest
             movieModel
                 .find(null, [
@@ -338,5 +363,15 @@ exports.getMovieRows = async (req, res) => {
         res.json(movies);
     } catch (error) {
         res.status(500).json({ message: error.message });
+    }
+};
+
+// Get All Movies
+exports.getAllMovies = async (req, res) => {
+    try {
+        const response = await movieModel.find(null, ["contentType"]);
+        res.json(response);
+    } catch (error) {
+        res.status(500).json({ message: "Something Went Wrong!" });
     }
 };

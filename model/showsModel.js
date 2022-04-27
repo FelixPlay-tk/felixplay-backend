@@ -1,10 +1,10 @@
 const mongoose = require("mongoose");
 
-const movieSchema = mongoose.Schema({
+const showSchema = mongoose.Schema({
     contentType: {
         type: String,
         lowercase: true,
-        default: "movie",
+        default: "show",
     },
     title: {
         type: String,
@@ -37,7 +37,6 @@ const movieSchema = mongoose.Schema({
             lowercase: true,
         },
     ],
-
     cast: [
         {
             type: String,
@@ -46,12 +45,6 @@ const movieSchema = mongoose.Schema({
             lowercase: true,
         },
     ],
-
-    runtime: {
-        type: String,
-        required: true,
-    },
-
     releaseDate: {
         type: Date,
         required: true,
@@ -63,19 +56,22 @@ const movieSchema = mongoose.Schema({
         index: true,
         lowercase: true,
     },
-
-    downloadLinks: [
+    episodes: [
         {
-            link: { type: String, required: true },
-            size: { type: String, required: true },
-            resolution: { type: String, required: true },
+            title: { type: String, required: true, lowercase: true },
+            description: { type: String },
+            runtime: { type: String },
+            banner: { type: String },
+            streamLink: { type: String, default: "" },
+            downloadLinks: [
+                {
+                    link: { type: String, required: true },
+                    size: { type: String, required: true },
+                    resolution: { type: String, required: true },
+                },
+            ],
         },
     ],
-
-    streamLink: {
-        type: String,
-        default: "",
-    },
 });
 
-module.exports = mongoose.model("movie", movieSchema);
+module.exports = mongoose.model("show", showSchema);
