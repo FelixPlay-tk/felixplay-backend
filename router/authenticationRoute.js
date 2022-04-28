@@ -10,6 +10,7 @@ const {
     forgotPassword,
     resetPassword,
     resendOTP,
+    logOut,
 } = require("../controllers/authentication");
 const { authorize } = require("../middlewares/authorize");
 
@@ -18,6 +19,7 @@ router.post("/resendotp", resendOTP);
 router.post("/verify", verifyEmail);
 
 router.post("/login", signInWithEmail);
+router.get("/logout", logOut);
 router.post("/authorize", verifyJWT);
 
 router.post("/forgetpassword", forgotPassword);

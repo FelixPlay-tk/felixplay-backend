@@ -185,6 +185,11 @@ exports.signInWithEmail = async (req, res) => {
     }
 };
 
+exports.logOut = (req, res) => {
+    res.clearCookie("JWT_TOKEN");
+    res.json({ message: "Logout Success!" });
+};
+
 exports.verifyJWT = async (req, res) => {
     const { JWT_TOKEN } = req.body;
 
