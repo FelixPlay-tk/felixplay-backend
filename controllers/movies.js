@@ -1,3 +1,4 @@
+const { items } = require("../data/data");
 const movieModel = require("../model/movieModel");
 
 // add Movies
@@ -66,29 +67,6 @@ exports.addNewMovie = async (req, res) => {
     }
 };
 
-// Get Featured Movies
-exports.getFeaturedMovies = async (req, res) => {
-    try {
-        const response = await movieModel
-            .find(null, [
-                "contentType",
-                "title",
-                "language",
-                "detailss",
-                "banner",
-                "releaseDate",
-                "categories",
-                "languages",
-                "runtime",
-            ])
-            .sort({ releaseDate: -1 })
-            .limit(5);
-        res.json(response);
-    } catch (error) {
-        res.status(500).json({ message: "Something Went Wrong!" });
-    }
-};
-
 // Get Movies By Language
 exports.getMoviesByLanguage = async (req, res) => {
     const { language } = req.params;
@@ -98,7 +76,7 @@ exports.getMoviesByLanguage = async (req, res) => {
             .find({ language: language }, ["contentType", "banner", "title"])
             .sort({ releaseDate: -1 });
 
-        res.json(results);
+        res.json(items);
     } catch (error) {
         res.status(500).json({ message: "Something Went Wrong!" });
     }
@@ -349,91 +327,91 @@ exports.getMovieRows = async (req, res) => {
             movieBanner: {
                 title: "featured",
                 hasMore: false,
-                items: featured,
+                items: items,
                 id: "banner1",
             },
             movieRows: [
                 {
                     title: "latest movies",
                     hasMore: false,
-                    items: latest,
+                    items: items,
                     id: "row1",
                     link: "/movies/category/latest",
                 },
                 {
                     title: "comedy movies",
                     hasMore: true,
-                    items: comedy,
+                    items: items,
                     id: "row2",
                     link: "/movies/category/comedy",
                 },
                 {
                     title: "drama movies",
                     hasMore: true,
-                    items: drama,
+                    items: items,
                     id: "row3",
                     link: "/movies/category/drama",
                 },
                 {
                     title: "family movies",
                     hasMore: true,
-                    items: family,
+                    items: items,
                     id: "row4",
                     link: "/movies/category/family",
                 },
                 {
                     title: "crime movies",
                     hasMore: true,
-                    items: crime,
+                    items: items,
                     id: "row5",
                     link: "/movies/category/crime",
                 },
                 {
                     title: "thriller movies",
                     hasMore: true,
-                    items: thriller,
+                    items: items,
                     id: "row6",
                     link: "/movies/category/thriller",
                 },
                 {
                     title: "action movies",
                     hasMore: true,
-                    items: action,
+                    items: items,
                     id: "row7",
                     link: "/movies/category/action",
                 },
                 {
                     title: "romance movies",
                     hasMore: true,
-                    items: romance,
+                    items: items,
                     id: "row8",
                     link: "/movies/category/romance",
                 },
                 {
                     title: "horror movies",
                     hasMore: true,
-                    items: horror,
+                    items: items,
                     id: "row9",
                     link: "/movies/category/horror",
                 },
                 {
                     title: "bengali movies",
                     hasMore: true,
-                    items: bengali,
+                    items: items,
                     id: "row10",
                     link: "/movies/language/bengali",
                 },
                 {
                     title: "hindi movies",
                     hasMore: true,
-                    items: hindi,
+                    items: items,
                     id: "row11",
                     link: "/movies/language/hindi",
                 },
                 {
                     title: "english movies",
                     hasMore: true,
-                    items: english,
+                    items: items,
                     id: "row12",
                     link: "/movies/language/english",
                 },

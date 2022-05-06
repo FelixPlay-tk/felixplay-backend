@@ -11,10 +11,10 @@ const moviesRoute = require("./router/moviesRoute");
 
 // Middlewares
 app.use(
-    cors({
-        origin: ["http://localhost:3000"],
-        credentials: true,
-    })
+  cors({
+    origin: ["http://localhost:3000"],
+    credentials: true,
+  })
 );
 app.use(express.json());
 
@@ -25,5 +25,5 @@ app.use("/movies", moviesRoute);
 
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
-    console.log("server is running on port ", port);
+  console.log("server is running on port ", port);
 });

@@ -2,21 +2,21 @@ const express = require("express");
 const router = express.Router();
 
 const {
-    register,
-    verifyEmail,
-    signInWithEmail,
-    verifyJWT,
-    changePassword,
-    forgotPassword,
-    resetPassword,
-    resendOTP,
-    logOut,
+  register,
+  verifyEmail,
+  signInWithEmail,
+  verifyJWT,
+  changePassword,
+  forgotPassword,
+  resetPassword,
+  resendOTP,
+  logOut,
 } = require("../controllers/authentication");
 const { authorize } = require("../middlewares/authorize");
 
-router.post("/register", register);
+router.post("/signup", register);
 router.post("/resendotp", resendOTP);
-router.post("/verify", verifyEmail);
+router.post("/verifyemail", verifyEmail);
 
 router.post("/login", signInWithEmail);
 router.get("/logout", logOut);
