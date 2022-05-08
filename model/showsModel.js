@@ -1,61 +1,18 @@
 const mongoose = require("mongoose");
 
 const showSchema = mongoose.Schema({
-    contentType: {
-        type: String,
-        lowercase: true,
-        default: "show",
-    },
-    title: {
-        type: String,
-        required: true,
-        index: true,
-        lowercase: true,
-    },
-    details: {
-        type: String,
-        required: true,
-        lowercase: true,
-    },
-    language: {
-        type: String,
-        required: true,
-        index: true,
-    },
-    poster: {
-        type: String,
-        required: true,
-    },
-    banner: {
-        type: String,
-        required: true,
-    },
-    categories: [
-        {
-            type: String,
-            index: true,
-            lowercase: true,
-        },
-    ],
-    releaseDate: {
-        type: Date,
-        required: true,
-        index: true,
-    },
-    region: {
-        type: String,
-        required: true,
-        index: true,
-        lowercase: true,
-    },
-
+    contentType: { type: String, lowercase: true, default: "show" },
+    title: { type: String, required: true, index: true, lowercase: true },
+    details: { type: String, required: true, lowercase: true },
+    language: [{ type: String, required: true }],
+    poster: { type: String, required: true },
+    banner: { type: String, required: true },
+    categories: [{ type: String, index: true, lowercase: true }],
+    releaseDate: { type: Date, required: true, index: true },
+    region: { type: String, required: true, index: true, lowercase: true },
     seasons: [
         {
-            season: {
-                type: String,
-                required: true,
-            },
-
+            season: { type: String, required: true },
             episodes: [
                 {
                     title: { type: String, required: true, lowercase: true },

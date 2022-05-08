@@ -1,4 +1,3 @@
-const { items } = require("../data/data");
 const movieModel = require("../model/movieModel");
 
 // add Movies
@@ -67,33 +66,23 @@ exports.addNewMovie = async (req, res) => {
     }
 };
 
-// Get Movies By Language
-exports.getMoviesByLanguage = async (req, res) => {
-    const { language } = req.params;
-
-    try {
-        const results = await movieModel
-            .find({ language: language }, ["contentType", "banner", "title"])
-            .sort({ releaseDate: -1 });
-
-        res.json(items);
-    } catch (error) {
-        res.status(500).json({ message: "Something Went Wrong!" });
-    }
-};
-
 // Get Movies by Category
 exports.getMoviesByCategory = async (req, res) => {
     const { category } = req.params;
     const { limit } = req.query;
 
     try {
-        const results = await movieModel
-            .find({ categories: category }, ["contentType", "banner", "title"])
+        const movies = await movieModel
+            .find({ categories: category }, [
+                "contentType",
+                "banner",
+                "title",
+                "releaseDate",
+            ])
             .sort({ releaseDate: -1 })
             .limit(limit);
 
-        res.json(results);
+        res.json(movies);
     } catch (error) {
         res.status(500).json({ message: "Something Went Wrong!" });
     }
@@ -121,11 +110,7 @@ exports.getMovieLinks = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const movie = await movieModel.findById(id, [
-            "streamLink",
-            "downloadLinks",
-        ]);
-        // .select("-__v");
+        const movie = await movieModel.findById(id, ["downloadLinks"]);
         res.json(movie);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -285,70 +270,71 @@ exports.getMovieRows = async (req, res) => {
             movieBanner: {
                 title: "featured",
                 hasMore: false,
-                items: items,
+                items: featured,
                 id: "banner1",
             },
+
             movieRows: [
                 {
                     title: "latest movies",
                     hasMore: false,
-                    items: items,
+                    items: latest,
                     id: "row1",
                     link: "/movies/category/latest",
                 },
                 {
                     title: "comedy movies",
                     hasMore: true,
-                    items: items,
+                    items: comedy,
                     id: "row2",
                     link: "/movies/category/comedy",
                 },
                 {
                     title: "drama movies",
                     hasMore: true,
-                    items: items,
+                    items: drama,
                     id: "row3",
                     link: "/movies/category/drama",
                 },
                 {
                     title: "family movies",
                     hasMore: true,
-                    items: items,
+                    items: family,
                     id: "row4",
                     link: "/movies/category/family",
                 },
                 {
                     title: "crime movies",
                     hasMore: true,
-                    items: items,
+                    items: crime,
                     id: "row5",
                     link: "/movies/category/crime",
                 },
                 {
                     title: "thriller movies",
                     hasMore: true,
-                    items: items,
+                    items: thriller,
                     id: "row6",
                     link: "/movies/category/thriller",
                 },
                 {
                     title: "action movies",
                     hasMore: true,
-                    items: items,
+                    items: action,
                     id: "row7",
                     link: "/movies/category/action",
                 },
                 {
                     title: "romance movies",
                     hasMore: true,
-                    items: items,
+                    items: romance,
                     id: "row8",
                     link: "/movies/category/romance",
                 },
                 {
                     title: "horror movies",
                     hasMore: true,
-                    items: items,
+                    items: horror,
                     id: "row9",
                     link: "/movies/category/horror",
                 },
