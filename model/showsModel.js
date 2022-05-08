@@ -37,14 +37,6 @@ const showSchema = mongoose.Schema({
             lowercase: true,
         },
     ],
-    cast: [
-        {
-            type: String,
-            required: true,
-            index: true,
-            lowercase: true,
-        },
-    ],
     releaseDate: {
         type: Date,
         required: true,
@@ -56,18 +48,28 @@ const showSchema = mongoose.Schema({
         index: true,
         lowercase: true,
     },
-    episodes: [
+
+    seasons: [
         {
-            title: { type: String, required: true, lowercase: true },
-            description: { type: String },
-            runtime: { type: String },
-            banner: { type: String },
-            streamLink: { type: String, default: "" },
-            downloadLinks: [
+            season: {
+                type: String,
+                required: true,
+            },
+
+            episodes: [
                 {
-                    link: { type: String, required: true },
-                    size: { type: String, required: true },
-                    resolution: { type: String, required: true },
+                    title: { type: String, required: true, lowercase: true },
+                    description: { type: String },
+                    runtime: { type: String },
+                    banner: { type: String },
+                    streamLink: { type: String, default: "" },
+                    downloadLinks: [
+                        {
+                            link: { type: String, required: true },
+                            size: { type: String, required: true },
+                            resolution: { type: String, required: true },
+                        },
+                    ],
                 },
             ],
         },

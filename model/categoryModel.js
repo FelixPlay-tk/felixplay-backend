@@ -18,21 +18,10 @@ const showsCategorySchema = Schema({
     },
 });
 
-const animesCategorySchema = Schema({
-    name: {
-        type: String,
-        index: true,
-        required: true,
-        unique: true,
-    },
-});
-
 const moviesCategoryModel = model("moviesCategory", movieCategorySchema);
 const showsCategoryModel = model("showsCategory", showsCategorySchema);
-const animesCategoryModel = model("animesCategory", animesCategorySchema);
 
 module.exports = {
     moviesCategoryModel,
     showsCategoryModel,
-    animesCategoryModel,
 };

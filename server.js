@@ -8,13 +8,14 @@ const app = express();
 const authenticationRoute = require("./router/authenticationRoute");
 const categoriesRoute = require("./router/categoriesRoute");
 const moviesRoute = require("./router/moviesRoute");
+const { default: axios } = require("axios");
 
 // Middlewares
 app.use(
-  cors({
-    origin: ["http://localhost:3000"],
-    credentials: true,
-  })
+    cors({
+        origin: ["http://localhost:3000"],
+        credentials: true,
+    })
 );
 app.use(express.json());
 
@@ -23,7 +24,11 @@ app.use("/auth", authenticationRoute);
 app.use("/categories", categoriesRoute);
 app.use("/movies", moviesRoute);
 
+app.get("/", async (req, res) => {
+    res.send("");
+});
+
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
-  console.log("server is running on port ", port);
+    console.log("server is running on port ", port);
 });

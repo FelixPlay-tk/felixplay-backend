@@ -17,31 +17,26 @@ const movieSchema = mongoose.Schema({
         required: true,
         lowercase: true,
     },
-    language: {
-        type: String,
-        required: true,
-        index: true,
-    },
+    language: [
+        {
+            type: String,
+            required: true,
+        },
+    ],
+
     poster: {
         type: String,
         required: true,
     },
+
     banner: {
         type: String,
         required: true,
     },
+
     categories: [
         {
             type: String,
-            index: true,
-            lowercase: true,
-        },
-    ],
-
-    cast: [
-        {
-            type: String,
-            required: true,
             index: true,
             lowercase: true,
         },
@@ -57,6 +52,7 @@ const movieSchema = mongoose.Schema({
         required: true,
         index: true,
     },
+
     region: {
         type: String,
         required: true,

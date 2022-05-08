@@ -146,9 +146,6 @@ exports.getMovieRows = async (req, res) => {
             action,
             romance,
             horror,
-            bengali,
-            hindi,
-            english,
         ] = await Promise.all([
             // featured
             await movieModel
@@ -282,45 +279,6 @@ exports.getMovieRows = async (req, res) => {
                 ])
                 .limit(20)
                 .sort({ releaseDate: -1 }),
-
-            //Bengali movies
-            movieModel
-                .find({ language: "bengali" }, [
-                    "contentType",
-                    "title",
-                    "details",
-                    "poster",
-                    "releaseDate",
-                    "banner",
-                ])
-                .limit(20)
-                .sort({ releaseDate: -1 }),
-
-            //hindi movies
-            movieModel
-                .find({ language: "hindi" }, [
-                    "contentType",
-                    "title",
-                    "details",
-                    "poster",
-                    "releaseDate",
-                    "banner",
-                ])
-                .limit(20)
-                .sort({ releaseDate: -1 }),
-
-            //english movies
-            movieModel
-                .find({ language: "english" }, [
-                    "contentType",
-                    "title",
-                    "details",
-                    "poster",
-                    "releaseDate",
-                    "banner",
-                ])
-                .limit(20)
-                .sort({ releaseDate: -1 }),
         ]);
 
         const movies = {
@@ -393,27 +351,6 @@ exports.getMovieRows = async (req, res) => {
                     items: items,
                     id: "row9",
                     link: "/movies/category/horror",
-                },
-                {
-                    title: "bengali movies",
-                    hasMore: true,
-                    items: items,
-                    id: "row10",
-                    link: "/movies/language/bengali",
-                },
-                {
-                    title: "hindi movies",
-                    hasMore: true,
-                    items: items,
-                    id: "row11",
-                    link: "/movies/language/hindi",
-                },
-                {
-                    title: "english movies",
-                    hasMore: true,
-                    items: items,
-                    id: "row12",
-                    link: "/movies/language/english",
                 },
             ],
         };
