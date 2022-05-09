@@ -6,7 +6,6 @@ const {
     addNewMovie,
     getMoviesByLanguage,
     getMoviesByCategory,
-    getFeaturedMovies,
     getSingleMovie,
     getMovieLinks,
     getMovieRows,
