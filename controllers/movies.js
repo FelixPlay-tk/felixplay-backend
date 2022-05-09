@@ -36,7 +36,6 @@ exports.addNewMovie = async (req, res) => {
     try {
         const checkExist = await movieModel.findOne({
             title,
-            language,
             releaseDate,
         });
 
@@ -60,12 +59,30 @@ exports.addNewMovie = async (req, res) => {
         });
 
         const saveMovie = await newMovie.save();
-        res.status(201).json(newMovie);
+        res.status(201).json(saveMovie);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
 };
 
+<<<<<<< HEAD
+=======
+// Get Movies By Language
+exports.getMoviesByLanguage = async (req, res) => {
+    const { language } = req.params;
+
+    try {
+        const results = await movieModel
+            .find({ language: language }, ["contentType", "banner", "title"])
+            .sort({ releaseDate: -1 });
+
+        res.json(results);
+    } catch (error) {
+        res.status(500).json({ message: "Something Went Wrong!" });
+    }
+};
+
+>>>>>>> backend
 // Get Movies by Category
 exports.getMoviesByCategory = async (req, res) => {
     const { category } = req.params;
