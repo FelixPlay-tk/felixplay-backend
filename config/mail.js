@@ -2,67 +2,67 @@ const nodemailer = require("nodemailer");
 const { google } = require("googleapis");
 
 const CLIENT_ID =
-  "284416396339-t546r7j0ni89d68c7mq5838t89pokt8r.apps.googleusercontent.com";
-const CLIENT_SECRET = "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";
+    "405665757399-i6ag3obsava4mk9hr1cpaqqkivg3rjj0.apps.googleusercontent.com";
+const CLIENT_SECRET = "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";
 const REDIRECT_URI = "https://developers.google.com/oauthplayground";
 const REFRESH_TOKEN =
-  "1//04QjZ1wds6QQtCgYIARAAGAQSNwF-L9IrQjGySD7uSq1UCr8sROgxIw064_h8bQZXB0YZQWoqdjVWOhzFrj8rLwWjHe61bMhAPaQ";
+    "1//04qPZ-u6SMfMFCgYIARAAGAQSNwF-L9Ir1zcdiJhCush1UyQdAzu2mc_c8i2unYFqrFTqhuM23LiB1-r1AniQGYrXZCw8LZI0hck";
 
 const oAuth2Client = new google.auth.OAuth2(
-  CLIENT_ID,
-  CLIENT_SECRET,
-  REDIRECT_URI
+    CLIENT_ID,
+    CLIENT_SECRET,
+    REDIRECT_URI
 );
 
 oAuth2Client.setCredentials({ refresh_token: REFRESH_TOKEN });
 
 exports.sendVerificationLink = (to, token) => {
-  const accessToken = oAuth2Client.getAccessToken();
+    const accessToken = oAuth2Client.getAccessToken();
 
-  const transport = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      type: "OAuth2",
-      user: "officialfelixplay@gmail.com",
-      clientId: CLIENT_ID,
-      clientSecret: CLIENT_SECRET,
-      refreshToken: REFRESH_TOKEN,
-      accessToken: accessToken,
-    },
-  });
+    const transport = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            type: "OAuth2",
+            user: "officialfelixplay@gmail.com",
+            clientId: CLIENT_ID,
+            clientSecret: CLIENT_SECRET,
+            refreshToken: REFRESH_TOKEN,
+            accessToken: accessToken,
+        },
+    });
 
-  const mailOptions = {
-    from: "FelixPlay <noreply@felixplay.tk>",
-    to: to,
-    subject: "Verify Email",
-    text: `Use this OTP to Verify your Account - ${token}`,
-  };
+    const mailOptions = {
+        from: "FelixPlay <noreply@felixplay.tk>",
+        to: to,
+        subject: "Verify Email",
+        text: `Use this OTP to Verify your Account - ${token}`,
+    };
 
-  const result = transport.sendMail(mailOptions);
-  return result;
+    const result = transport.sendMail(mailOptions);
+    return result;
 };
 
 exports.sendResetPasswordMail = async (to, token) => {
-  const accessToken = oAuth2Client.getAccessToken();
+    const accessToken = oAuth2Client.getAccessToken();
 
-  const transport = nodemailer.createTransport({
-    service: "gmail",
-    auth: {
-      type: "OAuth2",
-      user: "officialfelixplay@gmail.com",
-      clientId: CLIENT_ID,
-      clientSecret: CLIENT_SECRET,
-      refreshToken: REFRESH_TOKEN,
-      accessToken: accessToken,
-    },
-  });
+    const transport = nodemailer.createTransport({
+        service: "gmail",
+        auth: {
+            type: "OAuth2",
+            user: "officialfelixplay@gmail.com",
+            clientId: CLIENT_ID,
+            clientSecret: CLIENT_SECRET,
+            refreshToken: REFRESH_TOKEN,
+            accessToken: accessToken,
+        },
+    });
 
-  const mailOptions = {
-    from: "FelixPlay <noreply@felixplay.tk>",
-    to: to,
-    subject: "Reset Password",
-    text: `Visit this link to reset your password http://localhost:3000/resetpassword?token=${token}`,
-  };
+    const mailOptions = {
+        from: "FelixPlay <noreply@felixplay.tk>",
+        to: to,
+        subject: "Reset Password",
+        text: `Visit this link to reset your password http://localhost:3000/resetpassword?token=${token}`,
+    };
 
-  return transport.sendMail(mailOptions);
+    return transport.sendMail(mailOptions);
 };
