@@ -5,37 +5,37 @@ exports.addNewMovie = async (req, res) => {
     const {
         contentType,
         title,
-        detailss,
+        details,
+        language,
         poster,
         banner,
-        language,
         categories,
-        cast,
         runtime,
         releaseDate,
         region,
-        downloadLinks,
         streamLink,
+        downloadLinks,
     } = req.body;
 
     if (
         !(contentType,
         title,
-        detailss,
+        details,
         language,
         poster,
         banner,
         categories,
-        cast,
         runtime,
         releaseDate,
-        region)
+        region,
+        downloadLinks)
     )
         return res.status(400).json({ message: "All fields are required!" });
 
     try {
         const checkExist = await movieModel.findOne({
             title,
+            language,
             releaseDate,
         });
 
@@ -45,17 +45,15 @@ exports.addNewMovie = async (req, res) => {
         const newMovie = new movieModel({
             contentType,
             title,
-            detailss,
+            details,
             language,
             poster,
             banner,
             categories,
-            cast,
             runtime,
             releaseDate,
             region,
             downloadLinks,
-            streamLink,
         });
 
         const saveMovie = await newMovie.save();
@@ -65,8 +63,6 @@ exports.addNewMovie = async (req, res) => {
     }
 };
 
-<<<<<<< HEAD
-=======
 // Get Movies By Language
 exports.getMoviesByLanguage = async (req, res) => {
     const { language } = req.params;
@@ -82,7 +78,6 @@ exports.getMoviesByLanguage = async (req, res) => {
     }
 };
 
->>>>>>> backend
 // Get Movies by Category
 exports.getMoviesByCategory = async (req, res) => {
     const { category } = req.params;

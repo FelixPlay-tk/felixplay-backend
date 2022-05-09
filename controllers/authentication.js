@@ -9,22 +9,22 @@ const { equals, isEmail } = require("validator");
 exports.register = async (req, res) => {
     const { firstname, lastname, email, password, confirmPassword } = req.body;
 
-    if (!firstname || !lastname || !email || !password || !confirmPassword) {
+    if (!firstname || !lastname || !email || !password || !confirmPassword)
         return res.status(400).json({ message: "All fields are required" });
-    }
 
     if (!email || !isEmail(email))
         return res.json({ message: "Please provide valid email address" });
 
-    if (!equals(password, confirmPassword)) {
+    if (!equals(password, confirmPassword))
         return res.status(400).json({ message: "Passwords do not match" });
-    }
 
     try {
         const checkExist = await userModel.findOne({ email: email });
 
         if (checkExist && !checkExist.verified) {
-            sendVerificationLink(checkExist.email, checkExist.OTP);
+            sendVerificationLink(checkExist.email, checkExist.OTP)
+                .then((result) => console.log(result))
+                .catch((err) => console.log(err.message));
             return res.json({
                 message:
                     "We have sent an One Time Passcode to verify your account",
@@ -183,11 +183,6 @@ exports.signInWithEmail = async (req, res) => {
     } catch (error) {
         return res.status(500).json({ message: "Oops! Something went wrong" });
     }
-};
-
-exports.logOut = (req, res) => {
-    res.clearCookie("JWT_TOKEN");
-    res.json({ message: "Logout Success!" });
 };
 
 exports.verifyJWT = async (req, res) => {
