@@ -3,7 +3,13 @@ const mongoose = require("mongoose");
 const movieSchema = mongoose.Schema(
     {
         contentType: { type: String, lowercase: true, default: "movie" },
-        title: { type: String, required: true, index: true, lowercase: true },
+        title: {
+            type: String,
+            required: true,
+            index: true,
+            lowercase: true,
+            trim: true,
+        },
         details: { type: String, required: true, lowercase: true },
         language: [{ type: String, required: true }],
         poster: { type: String, required: true },
