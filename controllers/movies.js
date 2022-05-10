@@ -53,13 +53,14 @@ exports.addNewMovie = async (req, res) => {
             runtime,
             releaseDate,
             region,
+            streamLink,
             downloadLinks,
         });
 
         const saveMovie = await newMovie.save();
         res.status(201).json(saveMovie);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(400).json({ message: error.message });
     }
 };
 

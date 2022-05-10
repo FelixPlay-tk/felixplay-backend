@@ -11,7 +11,7 @@ const movieSchema = mongoose.Schema(
             trim: true,
         },
         details: { type: String, required: true, lowercase: true },
-        language: [{ type: String, required: true }],
+        language: [{ type: String, required: true, lowercase: true }],
         poster: { type: String, required: true },
         banner: { type: String, required: true },
         categories: [{ type: String, index: true, lowercase: true }],
