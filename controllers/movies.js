@@ -1,5 +1,15 @@
 const movieModel = require("../model/movieModel");
 
+// Get All Movies
+exports.getAllMovies = async (req, res) => {
+    try {
+        const response = await movieModel.find(null, ["contentType"]);
+        res.json(response);
+    } catch (error) {
+        res.status(500).json({ message: "Something Went Wrong!" });
+    }
+};
+
 // add Movies
 exports.addNewMovie = async (req, res) => {
     const {
@@ -357,15 +367,5 @@ exports.getMovieRows = async (req, res) => {
         res.json(movies);
     } catch (error) {
         res.status(500).json({ message: error.message });
-    }
-};
-
-// Get All Movies
-exports.getAllMovies = async (req, res) => {
-    try {
-        const response = await movieModel.find(null, ["contentType"]);
-        res.json(response);
-    } catch (error) {
-        res.status(500).json({ message: "Something Went Wrong!" });
     }
 };
