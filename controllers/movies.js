@@ -1,6 +1,21 @@
 const Row = require("../classes/Row");
 const movieModel = require("../model/movieModel");
 
+const getMovie = (args) => {
+    return movieModel
+        .find(args || null, [
+            "contentType",
+            "title",
+            "details",
+            "poster",
+            "releaseDate",
+            "banner",
+            "categories",
+        ])
+        .limit(20)
+        .sort({ releaseDate: -1 });
+};
+
 // Get All Movies
 exports.getAllMovies = async (req, res) => {
     try {
@@ -93,9 +108,25 @@ exports.getMoviesByLanguage = async (req, res) => {
 // Get Movies by Category
 exports.getMoviesByCategory = async (req, res) => {
     const { category } = req.params;
-    const { limit } = req.query;
+    const page = +req.query.page;
+    const limit = 30;
+
+    const result = {
+        hasNext: false,
+    };
 
     try {
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+
+        const length = await movieModel
+            .find({ categories: category })
+            .countDocuments();
+
+        if (endIndex < length) {
+            result.hasNext = true;
+        }
+
         const movies = await movieModel
             .find({ categories: category }, [
                 "contentType",
@@ -104,9 +135,12 @@ exports.getMoviesByCategory = async (req, res) => {
                 "releaseDate",
             ])
             .sort({ releaseDate: -1 })
+            .skip(startIndex)
             .limit(limit);
 
-        res.json(movies);
+        result.items = movies;
+
+        res.json(result);
     } catch (error) {
         res.status(500).json({ message: "Something Went Wrong!" });
     }
@@ -119,9 +153,7 @@ exports.getSingleMovie = async (req, res) => {
     try {
         const movie = await movieModel
             .findById(id)
-            .select("-downloadLinks")
-            .select("-streamLink")
-            .select("-__v");
+            .select("-downloadLinks -streamLink -__v -updatedAt -createdAt");
 
         res.json(movie);
     } catch (error) {
@@ -135,6 +167,7 @@ exports.getMovieLinks = async (req, res) => {
 
     try {
         const movie = await movieModel.findById(id, ["downloadLinks"]);
+
         res.json(movie);
     } catch (error) {
         res.status(500).json({ message: error.message });
@@ -163,21 +196,6 @@ exports.getFeatured = async (req, res) => {
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
-};
-
-const getMovie = (args) => {
-    return movieModel
-        .find(args || null, [
-            "contentType",
-            "title",
-            "details",
-            "poster",
-            "releaseDate",
-            "banner",
-            "categories",
-        ])
-        .limit(20)
-        .sort({ releaseDate: -1 });
 };
 
 // Get all movie rows

@@ -1,7 +1,6 @@
 const {
     moviesCategoryModel,
     showsCategoryModel,
-    animesCategoryModel,
 } = require("../model/categoryModel");
 
 exports.getMoviesCategory = async (req, res) => {
@@ -15,6 +14,7 @@ exports.getMoviesCategory = async (req, res) => {
         return res.status(500).json({ message: "Something went wrong!" });
     }
 };
+
 exports.getShowsCategory = async (req, res) => {
     try {
         const data = await showsCategoryModel.find();
