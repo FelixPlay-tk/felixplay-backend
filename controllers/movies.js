@@ -17,7 +17,7 @@ const getMovie = (args) => {
 };
 
 // Get All Movies
-exports.getAllMovies = async (req, res) => {
+exports.getAllMovieID = async (req, res) => {
     try {
         const response = await movieModel.find(null, ["contentType"]);
         res.json(response);
