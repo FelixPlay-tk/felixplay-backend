@@ -140,6 +140,30 @@ exports.getMovieLinks = async (req, res) => {
     }
 };
 
+// Featured Movies
+exports.getFeatured = async (req, res) => {
+    try {
+        const result = await movieModel
+            .find(null, [
+                "contentType",
+                "title",
+                "language",
+                "details",
+                "banner",
+                "releaseDate",
+                "categories",
+                "languages",
+                "runtime",
+            ])
+            .sort({ releaseDate: -1 })
+            .limit(5);
+
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // Get all movie rows
 exports.getMovieRows = async (req, res) => {
     try {
