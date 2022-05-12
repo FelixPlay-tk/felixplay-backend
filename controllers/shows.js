@@ -157,7 +157,7 @@ exports.getSingleShow = async (req, res) => {
     try {
         const show = await showsModel
             .findById(id)
-            .select("-__v -updatedAt -createdAt");
+            .select("-episodes -__v -updatedAt -createdAt");
 
         res.json(show);
     } catch (error) {

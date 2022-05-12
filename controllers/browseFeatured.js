@@ -1,8 +1,23 @@
 const Row = require("../classes/Row");
 const movieModel = require("../model/movieModel");
+const showsModel = require("../model/showsModel");
 
 const getMovie = (args) => {
     return movieModel
+        .find(args || null, [
+            "contentType",
+            "title",
+            "details",
+            "poster",
+            "releaseDate",
+            "banner",
+            "categories",
+        ])
+        .limit(20)
+        .sort({ releaseDate: -1 });
+};
+const getShow = (args) => {
+    return showsModel
         .find(args || null, [
             "contentType",
             "title",
@@ -19,22 +34,47 @@ const getMovie = (args) => {
 // Featured Movies
 exports.getFeatured = async (req, res) => {
     try {
-        const result = await movieModel
-            .find(null, [
-                "contentType",
-                "title",
-                "language",
-                "details",
-                "banner",
-                "releaseDate",
-                "categories",
-                "languages",
-                "runtime",
-            ])
-            .sort({ releaseDate: -1 })
-            .limit(5);
+        const items = [];
 
-        res.json(result);
+        const allItems = await Promise.all([
+            showsModel
+                .find(null, [
+                    "contentType",
+                    "title",
+                    "language",
+                    "details",
+                    "banner",
+                    "releaseDate",
+                    "categories",
+                    "languages",
+                    "runtime",
+                ])
+                .sort({ releaseDate: -1 })
+                .limit(5),
+
+            movieModel
+                .find(null, [
+                    "contentType",
+                    "title",
+                    "language",
+                    "details",
+                    "banner",
+                    "releaseDate",
+                    "categories",
+                    "languages",
+                    "runtime",
+                ])
+                .sort({ releaseDate: -1 })
+                .limit(5),
+        ]);
+
+        for (let index = 0; index < allItems.length; index++) {
+            for (let j = 0; j < allItems[index].length; j++) {
+                items.push(allItems[index][j]);
+            }
+        }
+        items.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
+        res.json(items);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }
@@ -55,6 +95,7 @@ exports.getContentRows = async (req, res) => {
     try {
         const allRows = await Promise.all([
             getMovie(),
+            getShow(),
             getMovie({ categories: "comedy" }),
             getMovie({ categories: "drama" }),
             getMovie({ categories: "mystery" }),
@@ -67,29 +108,37 @@ exports.getContentRows = async (req, res) => {
         ]);
 
         const [
-            latest,
-            comedy,
-            drama,
-            mystery,
-            family,
-            crime,
-            thriller,
-            action,
-            romance,
-            horror,
+            latestMovies,
+            latestShows,
+            comedyMovies,
+            dramaMovies,
+            mysteryMovies,
+            familyMovies,
+            crimeMovies,
+            thrillerMovies,
+            actionMovies,
+            romanceMovies,
+            horrorMovies,
         ] = allRows;
 
         const movies = [
-            new Row(1, "latest", "movie", latest, false),
-            new Row(2, "comedy", "movie", comedy, true),
-            new Row(3, "drama", "movie", drama, true),
-            new Row(3, "mystery", "movie", mystery, false),
-            new Row(4, "family", "movie", family, true),
-            new Row(5, "crime", "movie", crime, true),
-            new Row(6, "thriller", "movie", thriller, true),
-            new Row(7, "action", "movie", action, true),
-            new Row(8, "romance", "movie", romance, true),
-            new Row(9, "horror", "movie", horror, true),
+            new Row("latestMovies", "latest", "movie", latestMovies),
+            new Row("latestShows", "latest", "Show", latestShows),
+            new Row("comedyMovies", "comedy", "movie", comedyMovies, true),
+            new Row("dramaMovies", "drama", "movie", dramaMovies, true),
+            new Row("mysteryMovies", "mystery", "movie", mysteryMovies, false),
+            new Row("familyMovies", "family", "movie", familyMovies, true),
+            new Row("crimeMovies", "crime", "movie", crimeMovies, true),
+            new Row(
+                "thrillerMovies",
+                "thriller",
+                "movie",
+                thrillerMovies,
+                true
+            ),
+            new Row("actionMovies", "action", "movie", actionMovies, true),
+            new Row("romanceMovies", "romance", "movie", romanceMovies, true),
+            new Row("horrorMovies", "horror", "movie", horrorMovies, true),
         ];
 
         if (endIndex < movies.length) {
@@ -103,3 +152,38 @@ exports.getContentRows = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+// const shows = await showsModel
+//     .find(null, [
+//         "contentType",
+//         "title",
+//         "language",
+//         "details",
+//         "banner",
+//         "releaseDate",
+//         "categories",
+//         "languages",
+//         "runtime",
+//     ])
+//     .sort({ releaseDate: -1 })
+//     .limit(5);
+
+// const movies = await movieModel
+//     .find(null, [
+//         "contentType",
+//         "title",
+//         "language",
+//         "details",
+//         "banner",
+//         "releaseDate",
+//         "categories",
+//         "languages",
+//         "runtime",
+//     ])
+//     .sort({ releaseDate: -1 })
+//     .limit(5);
+
+// shows.map((show) => items.push(show));
+// movies.map((movie) => items.push(movie));
+
+// items.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
