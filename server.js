@@ -9,6 +9,8 @@ const app = express();
 const authenticationRoute = require("./router/authenticationRoute");
 const categoriesRoute = require("./router/categoriesRoute");
 const moviesRoute = require("./router/moviesRoute");
+const showsRoute = require("./router/showsRoute");
+const browseFeaturedRoute = require("./router/browseFeaturedRoute");
 
 // Middlewares
 app.use(cors());
@@ -17,7 +19,9 @@ app.use(express.json());
 // Routes
 app.use("/auth", authenticationRoute);
 app.use("/categories", categoriesRoute);
+app.use("/browse", browseFeaturedRoute);
 app.use("/movies", moviesRoute);
+app.use("/shows", showsRoute);
 
 const port = process.env.PORT || 8000;
 app.listen(port, () => {

@@ -1,6 +1,7 @@
 const req = require("express/lib/request");
 const Row = require("../classes/Row");
 const showsModel = require("../model/showsModel");
+const { FAKE_SHOWS } = require("../data/data");
 
 // Get All Shows ID
 exports.getAllShowsID = async (req, res) => {
@@ -14,7 +15,7 @@ exports.getAllShowsID = async (req, res) => {
 
 // Add New Show
 exports.addNewShow = async (req, res) => {
-    res.send("");
+    res.send(FAKE_SHOWS);
 };
 
 // Get Shows by Platforms
@@ -31,23 +32,26 @@ exports.getShowsByPlatform = async (req, res) => {
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
 
-        const length = await showsModel.find({ platform }).countDocuments();
+        // const length = await showsModel.find({ platform }).countDocuments();
+        const length = FAKE_SHOWS.length;
 
         if (endIndex < length) {
             result.hasNext = true;
         }
 
-        const shows = await showsModel
-            .find({ platform }, [
-                "contentType",
-                "banner",
-                "poster",
-                "title",
-                "releaseDate",
-            ])
-            .sort({ releaseDate: -1 })
-            .skip(startIndex)
-            .limit(limit);
+        // const shows = await showsModel
+        //     .find({ platform }, [
+        //         "contentType",
+        //         "banner",
+        //         "poster",
+        //         "title",
+        //         "releaseDate",
+        //     ])
+        //     .sort({ releaseDate: -1 })
+        //     .skip(startIndex)
+        //     .limit(limit);
+
+        const shows = FAKE_SHOWS.slice(startIndex, endIndex);
 
         result.items = shows;
 
@@ -62,9 +66,11 @@ exports.getSingleShow = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const show = await showsModel
-            .findById(id)
-            .select("-episodes -__v -updatedAt -createdAt");
+        // const show = await showsModel
+        //     .findById(id)
+        //     .select("-episodes -__v -updatedAt -createdAt");
+
+        const show = FAKE_SHOWS.find((item) => item._id === id);
 
         res.json(show);
     } catch (error) {
@@ -77,8 +83,13 @@ exports.getEpisodeLinks = async (req, res) => {
     const { id } = req.params;
 
     try {
-        const episodes = await showsModel.findById(id, ["episodes"]);
-        res.json(episodes);
+        // const episodeLinks = await showsModel.findById(id, ["episodes"]);
+
+        const selectEpisode = FAKE_SHOWS.filter(({ _id }) => _id === id);
+        const episodeLinks = selectEpisode.map(({ episodes }) => {
+            return episodes;
+        });
+        res.json(episodeLinks);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

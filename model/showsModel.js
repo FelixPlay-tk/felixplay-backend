@@ -17,7 +17,6 @@ const showSchema = mongoose.Schema({
             title: { type: String, required: true, lowercase: true },
             description: { type: String },
             runtime: { type: String },
-            banner: { type: String },
             streamLink: { type: String, default: "" },
             downloadLinks: [
                 {

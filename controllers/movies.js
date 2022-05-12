@@ -146,6 +146,39 @@ exports.getMoviesByCategory = async (req, res) => {
     }
 };
 
+// Get All Movies
+exports.getAllMovies = async (req, res) => {
+    const page = +req.query.page;
+    const limit = 30;
+
+    const result = {
+        hasNext: false,
+    };
+
+    try {
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+
+        const length = await movieModel.find().countDocuments();
+
+        if (endIndex < length) {
+            result.hasNext = true;
+        }
+
+        const movies = await movieModel
+            .find(null, ["contentType", "banner", "title", "releaseDate"])
+            .sort({ releaseDate: -1 })
+            .skip(startIndex)
+            .limit(limit);
+
+        result.items = movies;
+
+        res.json(result);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // Get Single Movie
 exports.getSingleMovie = async (req, res) => {
     const { id } = req.params;
@@ -169,94 +202,6 @@ exports.getMovieLinks = async (req, res) => {
         const movie = await movieModel.findById(id, ["downloadLinks"]);
 
         res.json(movie);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-// Featured Movies
-exports.getFeatured = async (req, res) => {
-    try {
-        const result = await movieModel
-            .find(null, [
-                "contentType",
-                "title",
-                "language",
-                "details",
-                "banner",
-                "releaseDate",
-                "categories",
-                "languages",
-                "runtime",
-            ])
-            .sort({ releaseDate: -1 })
-            .limit(5);
-
-        res.json(result);
-    } catch (error) {
-        res.status(500).json({ message: error.message });
-    }
-};
-
-// Get all movie rows
-exports.getMovieRows = async (req, res) => {
-    const page = +req.query.page;
-    const limit = 3;
-
-    const startIndex = (page - 1) * limit;
-    const endIndex = page * limit;
-
-    const result = {
-        hasNext: false,
-    };
-
-    try {
-        const allRows = await Promise.all([
-            getMovie(),
-            getMovie({ categories: "comedy" }),
-            getMovie({ categories: "drama" }),
-            getMovie({ categories: "mystery" }),
-            getMovie({ categories: "family" }),
-            getMovie({ categories: "crime" }),
-            getMovie({ categories: "thriller" }),
-            getMovie({ categories: "action" }),
-            getMovie({ categories: "romance" }),
-            getMovie({ categories: "horror" }),
-        ]);
-
-        const [
-            latest,
-            comedy,
-            drama,
-            mystery,
-            family,
-            crime,
-            thriller,
-            action,
-            romance,
-            horror,
-        ] = allRows;
-
-        const movies = [
-            new Row(1, "latest", "movie", latest, false),
-            new Row(2, "comedy", "movie", comedy, true),
-            new Row(3, "drama", "movie", drama, true),
-            new Row(3, "mystery", "movie", mystery, false),
-            new Row(4, "family", "movie", family, true),
-            new Row(5, "crime", "movie", crime, true),
-            new Row(6, "thriller", "movie", thriller, true),
-            new Row(7, "action", "movie", action, true),
-            new Row(8, "romance", "movie", romance, true),
-            new Row(9, "horror", "movie", horror, true),
-        ];
-
-        if (endIndex < movies.length) {
-            result.hasNext = true;
-        }
-
-        result.data = movies.slice(startIndex, endIndex);
-
-        res.json(result);
     } catch (error) {
         res.status(500).json({ message: error.message });
     }

@@ -7,17 +7,14 @@ const {
     getMoviesByCategory,
     getSingleMovie,
     getMovieLinks,
-    getMovieRows,
     getAllMovieID,
-    getFeatured,
+    getAllMovies,
 } = require("../controllers/movies");
 
 router.put("/add", addNewMovie);
 
-router.get("/all", getAllMovieID);
-router.get("/featured", getFeatured);
-router.get("/rows", getMovieRows);
-
+router.get("/all", getAllMovies);
+router.get("/ids", getAllMovieID);
 router.get("/category/:category", getMoviesByCategory);
 router.get("/details/:id", getSingleMovie);
 router.get("/links/:id", authorize, getMovieLinks);
