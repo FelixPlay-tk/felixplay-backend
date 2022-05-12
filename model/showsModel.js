@@ -7,14 +7,17 @@ const showSchema = mongoose.Schema({
     language: [{ type: String, required: true }],
     poster: { type: String, required: true },
     banner: { type: String, required: true },
+    platform: { type: String, index: true },
     categories: [{ type: String, index: true, lowercase: true }],
     releaseDate: { type: Date, required: true, index: true },
     region: { type: String, required: true, index: true, lowercase: true },
     seasons: [
         {
             season: { type: String, required: true },
+            releaseDate: { type: Date, required: true },
             episodes: [
                 {
+                    episode: { type: Number, required: true },
                     title: { type: String, required: true, lowercase: true },
                     description: { type: String },
                     runtime: { type: String },
@@ -23,8 +26,8 @@ const showSchema = mongoose.Schema({
                     downloadLinks: [
                         {
                             link: { type: String, required: true },
-                            size: { type: String, required: true },
                             resolution: { type: String, required: true },
+                            size: { type: String, required: true },
                         },
                     ],
                 },
