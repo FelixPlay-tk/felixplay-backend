@@ -1,5 +1,3 @@
-const req = require("express/lib/request");
-const Row = require("../classes/Row");
 const showsModel = require("../model/showsModel");
 const { FAKE_SHOWS } = require("../data/data");
 
@@ -15,7 +13,101 @@ exports.getAllShowsID = async (req, res) => {
 
 // Add New Show
 exports.addNewShow = async (req, res) => {
-    res.send(FAKE_SHOWS);
+    const {
+        title,
+        details,
+        language,
+        poster,
+        banner,
+        platform,
+        categories,
+        releaseDate,
+        region,
+        episodes,
+    } = req.body;
+
+    if (
+        !(title,
+        details,
+        language,
+        poster,
+        banner,
+        platform,
+        categories,
+        releaseDate,
+        region,
+        episodes)
+    )
+        return res.status(400).json({ message: "All fields are required!" });
+
+    try {
+        const checkExist = await showsModel.findOne({
+            title,
+            language,
+            releaseDate,
+        });
+
+        if (checkExist)
+            return res.status(409).json({ message: "Show already exists!" });
+
+        const newShow = new showsModel({
+            contentType: "show",
+            title,
+            details,
+            language,
+            poster,
+            banner,
+            platform,
+            categories,
+            releaseDate,
+            region,
+            episodes,
+        });
+
+        const saveShow = await newShow.save();
+        res.status(201).json(saveShow);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+};
+
+// Get All Shows
+exports.getAllShows = async (req, res) => {
+    const page = +req.query.page;
+    const limit = 30;
+
+    const result = {
+        hasNext: false,
+    };
+
+    try {
+        const startIndex = (page - 1) * limit;
+        const endIndex = page * limit;
+
+        const length = await showsModel.find().countDocuments();
+
+        if (endIndex < length) {
+            result.hasNext = true;
+        }
+
+        const shows = await showsModel
+            .find(null, [
+                "contentType",
+                "banner",
+                "poster",
+                "title",
+                "releaseDate",
+            ])
+            .sort({ releaseDate: -1 })
+            .skip(startIndex)
+            .limit(limit);
+
+        result.items = shows;
+
+        res.json(result);
+    } catch {
+        res.status(500).json({ message: "Something Went Wrong!" });
+    }
 };
 
 // Get Shows by Platforms
@@ -32,26 +124,23 @@ exports.getShowsByPlatform = async (req, res) => {
         const startIndex = (page - 1) * limit;
         const endIndex = page * limit;
 
-        // const length = await showsModel.find({ platform }).countDocuments();
-        const length = FAKE_SHOWS.length;
+        const length = await showsModel.find({ platform }).countDocuments();
 
         if (endIndex < length) {
             result.hasNext = true;
         }
 
-        // const shows = await showsModel
-        //     .find({ platform }, [
-        //         "contentType",
-        //         "banner",
-        //         "poster",
-        //         "title",
-        //         "releaseDate",
-        //     ])
-        //     .sort({ releaseDate: -1 })
-        //     .skip(startIndex)
-        //     .limit(limit);
-
-        const shows = FAKE_SHOWS.slice(startIndex, endIndex);
+        const shows = await showsModel
+            .find({ platform }, [
+                "contentType",
+                "banner",
+                "poster",
+                "title",
+                "releaseDate",
+            ])
+            .sort({ releaseDate: -1 })
+            .skip(startIndex)
+            .limit(limit);
 
         result.items = shows;
 
@@ -66,11 +155,9 @@ exports.getSingleShow = async (req, res) => {
     const { id } = req.params;
 
     try {
-        // const show = await showsModel
-        //     .findById(id)
-        //     .select("-episodes -__v -updatedAt -createdAt");
-
-        const show = FAKE_SHOWS.find((item) => item._id === id);
+        const show = await showsModel
+            .findById(id)
+            .select("-__v -updatedAt -createdAt");
 
         res.json(show);
     } catch (error) {
@@ -83,12 +170,8 @@ exports.getEpisodeLinks = async (req, res) => {
     const { id } = req.params;
 
     try {
-        // const episodeLinks = await showsModel.findById(id, ["episodes"]);
+        const episodeLinks = await showsModel.findById(id, ["episodes"]);
 
-        const selectEpisode = FAKE_SHOWS.filter(({ _id }) => _id === id);
-        const episodeLinks = selectEpisode.map(({ episodes }) => {
-            return episodes;
-        });
         res.json(episodeLinks);
     } catch (error) {
         res.status(500).json({ message: error.message });

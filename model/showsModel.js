@@ -13,16 +13,11 @@ const showSchema = mongoose.Schema({
     region: { type: String, required: true, index: true, lowercase: true },
     episodes: [
         {
-            episode: { type: Number, required: true },
-            title: { type: String, required: true, lowercase: true },
-            description: { type: String },
-            runtime: { type: String },
-            streamLink: { type: String, default: "" },
+            episode: { type: String, required: true },
             downloadLinks: [
                 {
                     link: { type: String, required: true },
                     resolution: { type: String, required: true },
-                    size: { type: String, required: true },
                 },
             ],
         },

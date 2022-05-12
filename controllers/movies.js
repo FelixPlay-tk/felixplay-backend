@@ -1,21 +1,6 @@
 const Row = require("../classes/Row");
 const movieModel = require("../model/movieModel");
 
-const getMovie = (args) => {
-    return movieModel
-        .find(args || null, [
-            "contentType",
-            "title",
-            "details",
-            "poster",
-            "releaseDate",
-            "banner",
-            "categories",
-        ])
-        .limit(20)
-        .sort({ releaseDate: -1 });
-};
-
 // Get All Movies
 exports.getAllMovieID = async (req, res) => {
     try {
