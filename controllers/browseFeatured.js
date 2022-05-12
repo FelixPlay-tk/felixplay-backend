@@ -31,6 +31,47 @@ const getShow = (args) => {
         .sort({ releaseDate: -1 });
 };
 
+exports.search = async (req, res) => {
+    const { query } = req.query;
+    if (!query) return res.status(400).json({ message: "Query Missing!" });
+
+    const items = [];
+
+    try {
+        const allItems = await Promise.all([
+            movieModel
+                .find({ title: { $regex: query, $options: "i" } }, [
+                    "contentType",
+                    "banner",
+                    "title",
+                ])
+                .sort({ releaseDate: -1 }),
+
+            showsModel
+                .find({ title: { $regex: query, $options: "i" } }, [
+                    "contentType",
+                    "banner",
+                    "title",
+                ])
+                .sort({ releaseDate: -1 }),
+        ]);
+
+        for (let index = 0; index < allItems.length; index++) {
+            for (let j = 0; j < allItems[index].length; j++) {
+                items.push(allItems[index][j]);
+            }
+        }
+
+        if (items.length === 0)
+            return res.status(404).json({ message: "No Result Found" });
+
+        items.sort((a, b) => new Date(b.releaseDate) - new Date(a.releaseDate));
+        res.json(items);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+};
+
 // Featured Movies
 exports.getFeatured = async (req, res) => {
     try {
@@ -152,6 +193,17 @@ exports.getContentRows = async (req, res) => {
         res.status(500).json({ message: error.message });
     }
 };
+
+// const results = await movieModel
+//     .find({ title: { $regex: query, $options: "i" } }, [
+//         "contentType",
+//         "banner",
+//         "title",
+//     ])
+//     .sort({ releaseDate: -1 });
+
+// if (results.length === 0)
+//     return res.status(404).json({ message: "No Result Found" });
 
 // const shows = await showsModel
 //     .find(null, [

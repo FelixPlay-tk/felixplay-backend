@@ -11,6 +11,7 @@ const categoriesRoute = require("./router/categoriesRoute");
 const moviesRoute = require("./router/moviesRoute");
 const showsRoute = require("./router/showsRoute");
 const browseFeaturedRoute = require("./router/browseFeaturedRoute");
+const { search } = require("./controllers/browseFeatured");
 
 // Middlewares
 app.use(cors());
@@ -22,6 +23,7 @@ app.use("/categories", categoriesRoute);
 app.use("/browse", browseFeaturedRoute);
 app.use("/movies", moviesRoute);
 app.use("/shows", showsRoute);
+app.use("/search", search);
 
 const port = process.env.PORT || 8000;
 app.listen(port, () => {
